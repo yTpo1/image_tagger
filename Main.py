@@ -8,8 +8,8 @@ if __name__ == "__main__":
 
     # CyberDB.add_used_photos()
 
-    photo_id = CyberDB.sql_get_photo_id("Daniel Tyka_21.jpg")
-    print(photo_id)
+    CyberDB.test_artist()
+    CyberDB.close_connection()
 
 
 # TODO: when calling sql_get_photo_id() - if doesn't find anything, returns none

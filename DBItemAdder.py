@@ -1,13 +1,17 @@
+from DBSelectQueries import DBSelectQueries as DBSel
 from OtherFunctionsNonDB import get_file_names_from_folder, read_json_file
 import re
 from DBConnection import create_connection, close_connection
 
 
-# TODO: add close_connection
 class DBManager:
 
     def __init__(self):
         self.connection = create_connection()
+
+    def close_connection(self):
+        """Remember to call this function after working with DB"""
+        close_connection(self.connection)
 
     def add_artists_to_db_from_json(self):
         artists_data = read_json_file(r"C:\Users\Toshiba\Videos\artists.json")
@@ -30,7 +34,7 @@ class DBManager:
             else:
                 deviantart = ''
 
-            self.sql_insert_artist("", artist_name, website, artstation, deviantart, "", "")
+            self.sql_insert_artist(artist_name, website, artstation, deviantart, "", "")
 
     def add_used_photos(self):
         used_photos_data = read_json_file(r"C:\Users\Toshiba\Videos\usedPhotos.json")
@@ -39,9 +43,9 @@ class DBManager:
             photo_name = item["filename"]
 
             # check if this image is in the database
-            check_if_exists = self.sql_check_photo_exists_in_db(photo_name)
+            check_if_exists = DBSel.sql_check_photo_exists_in_db(self.connection, photo_name)
             if check_if_exists != 0:
-                photo_id = str(self.sql_get_photo_id(photo_name)['PhotoID'])
+                photo_id = str(DBSel.sql_get_photo_id(self.connection, photo_name)['PhotoID'])
                 # add the id of the photo that was already used in the blog
                 self.sql_insert_used_photos(photo_id)
 
@@ -51,15 +55,6 @@ class DBManager:
             sql = "INSERT INTO `"+table_name+"`(`PhotoID`) VALUES ('" + photo_id +"')"
             cursor.execute(sql)
         self.connection.commit()
-
-    def sql_check_photo_exists_in_db(self, photo_name):
-        with self.connection.cursor() as cursor:
-            sql = "SELECT EXISTS(SELECT `filename` FROM `photos` WHERE `photos`.`filename`='" + photo_name+"')"
-            cursor.execute(sql)
-            result = cursor.fetchone()
-            num_result = result["EXISTS(SELECT `filename` FROM `photos` WHERE `photos`.`filename`='" + photo_name+"')"]
-
-            return num_result
 
     def sql_insert_photo(self, filename):
             with self.connection.cursor() as cursor:
@@ -79,7 +74,7 @@ class DBManager:
             cursor.execute(sql)
         self.connection.commit()
 
-    def sql_insert_artist(self, table_name, NameSurname, websiteURL, artstationURL, deviantartURL, InstagramURL, TumblrURL):
+    def sql_insert_artist(self, NameSurname, websiteURL, artstationURL, deviantartURL, InstagramURL, TumblrURL):
         table_name = "artists"
         with self.connection.cursor() as cursor:
             sql = "INSERT INTO `"+table_name+"`" \
@@ -87,31 +82,6 @@ class DBManager:
                   " VALUES (null,'"+NameSurname+"','"+websiteURL+"','"+artstationURL+"','"+deviantartURL+"','"+InstagramURL+"','"+TumblrURL+"')"
             cursor.execute(sql)
         self.connection.commit()
-
-    def sql_get_artists_id(self, name_surname):
-        """get the ID of the artist, from artist name"""
-        # get artist of the image
-        with self.connection.cursor() as cursor:
-            sql = "SELECT `ArtistID` FROM `artists` WHERE `NameSurname` = '" + name_surname + "'"
-            cursor.execute(sql)
-            result = cursor.fetchone()
-            return result
-
-    def sql_get_genre_id(self, genre_name):
-        """get the ID of the genre, from genre name"""
-        with self.connection.cursor() as cursor:
-            sql = "SELECT `GenreID` FROM `genres` WHERE `name` = '" + genre_name + "'"
-            cursor.execute(sql)
-            result = cursor.fetchone()
-            return result
-
-    def sql_get_photo_id(self, photo_name):
-        """get the ID of the photo, from photo name"""
-        with self.connection.cursor() as cursor:
-            sql = "SELECT `PhotoID` FROM `photos` WHERE `filename` = '" + photo_name + "'"
-            cursor.execute(sql)
-            result = cursor.fetchone()
-            return result
 
     def add_photos_assign_artist_and_genre_to_db(self):
         """Adding photos to DB and assigning them to their artists"""
@@ -122,14 +92,14 @@ class DBManager:
             self.sql_insert_photo(file_name)
 
             # the photo id
-            photo_id = self.sql_get_photo_id(file_name)
+            photo_id = DBSel.sql_get_photo_id(self.connection, file_name)
 
             # will get everything up to the first underscore of the line
             just_name = re.search("^[^_]+(?=_)", file_name)
-            artist_id = self.sql_get_artists_id(just_name[0])
+            artist_id = DBSel.sql_get_artists_id(self.connection, just_name[0])
 
             # TODO: put in manualy genre name
-            genre_id = self.sql_get_genre_id("space")
+            genre_id = DBSel.sql_get_genre_id(self.connection, "space")
 
             # assign photo to artist
             self.sql_assign_photo_to_artist(str(photo_id['PhotoID']), str(artist_id['ArtistID']))
@@ -146,10 +116,10 @@ class DBManager:
             self.sql_insert_photo(file_name)
 
             # the photo id
-            photo_id = self.sql_get_photo_id(file_name)
+            photo_id = DBSel.sql_get_photo_id(self.connection, file_name)
 
             # TODO: put in manualy genre name
-            genre_id = self.sql_get_genre_id("anime")
+            genre_id = DBSel.sql_get_genre_id(self.connection, "anime")
 
             # assign photo to genre
             self.sql_assign_photo_to_genres(str(photo_id['PhotoID']), str(genre_id['GenreID']))
