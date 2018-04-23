@@ -3,15 +3,15 @@
 class DBSelectQueries:
 
     @staticmethod
-    def sql_get_photo_id_and_name_from_genre_id(connection, genre_id):
+    def sql_get_photo_name_from_genre_id(connection, genre_id):
         """Returns a list"""
         with connection.cursor() as cursor:
-            sql = "SELECT `PhotoID`, `filename`" + \
+            sql = "SELECT `filename` " + \
                 "FROM `photos`" + \
                 "WHERE `photos`.`PhotoID` IN (" + \
                 "SELECT `PhotoId`" + \
                 "FROM `photos_to_genres`" + \
-                "WHERE `photos_to_genres`.`GenreID` ="+ str(genre_id) +")"
+                "WHERE `photos_to_genres`.`GenreID` =" + str(genre_id) + ")"
             cursor.execute(sql)
             result = cursor.fetchall()
             return result

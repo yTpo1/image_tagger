@@ -4,7 +4,7 @@ import re
 from DBConnection import create_connection, close_connection
 
 
-class DBManager:
+class DBItemAdder:
 
     def __init__(self):
         self.connection = create_connection()
