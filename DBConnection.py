@@ -13,3 +13,4 @@ def create_connection():
 
 def close_connection(connection):
     connection.close()
+

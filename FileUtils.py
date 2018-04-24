@@ -1,3 +1,5 @@
+import json
+import os
 from PIL import Image
 import shutil
 
@@ -18,3 +20,14 @@ def copy_image(filename):
     # destination_directory
     dst_dir = r"C:\Users\Toshiba\Videos\images_queried"
     shutil.copy(location_file, dst_dir)
+
+
+def get_file_names_from_folder(directory):
+    directory_items_list = os.listdir(directory)
+    return directory_items_list
+
+
+def read_json_file(file):
+    with open(file) as json_file:
+        data = json.load(json_file)
+    return data

@@ -36,6 +36,15 @@ class DBSelectQueries:
             return result
 
     @staticmethod
+    def sql_get_genre_name(connection, genre_id):
+        """get the name of the genre, from GenreID"""
+        with connection.cursor() as cursor:
+            sql = "SELECT `name` FROM `genres` WHERE `GenreID` = '" + genre_id + "'"
+            cursor.execute(sql)
+            result = cursor.fetchone()
+            return result
+
+    @staticmethod
     def sql_get_photo_id(connection, photo_name):
         """get the ID of the photo, from photo name"""
         with connection.cursor() as cursor:

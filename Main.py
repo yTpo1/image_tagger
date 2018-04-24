@@ -12,8 +12,8 @@ if __name__ == "__main__":
     # CyberDB.close_connection()
     ImgBoss = ImageManipulator()
 
-    ImgBoss.get_images_of_genre(9)
-
+    # ImgBoss.get_images_of_genre(9)
+    ImgBoss.assign_current_photos_to_genre(23)
 
 
 
