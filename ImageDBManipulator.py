@@ -29,5 +29,6 @@ class ImageManipulator:
 
     # Folder name - genre, all photos in folder add to that genre
 
+
 # lol = ImageManipulator()
 # lol.assign_current_photos_to_genre(9000)

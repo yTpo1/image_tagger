@@ -4,15 +4,19 @@ from PIL import Image
 import shutil
 
 
-def open_image_with_url(location):
-    img = Image.open(location)
-    img.show()
+def create_img_small(tmp_file_path_name, img_path_name):
+    """Open an image, resize it, save it"""
+    image = Image.open(img_path_name)
+    image = image.resize((250,250), Image.ANTIALIAS)
+    image.save(tmp_file_path_name, "ppm")
 
 
-def open_image(filename):
-    location = r"C:\Users\Toshiba\Videos\Cyberpunk all" + "\\" + filename
-    img = Image.open(location)
-    img.show()
+def check_if_file_exists(file_path_name):
+    return os.path.exists(file_path_name)
+
+
+def delete_file(file_path_name):
+    os.remove(file_path_name)
 
 
 def copy_image(filename):
@@ -31,3 +35,13 @@ def read_json_file(file):
     with open(file) as json_file:
         data = json.load(json_file)
     return data
+
+# def open_image_with_url(location):
+#     img = Image.open(location)
+#     img.show()
+#
+#
+# def open_image(filename):
+#     location = r"C:\Users\Toshiba\Videos\Cyberpunk all" + "\\" + filename
+#     img = Image.open(location)
+#     img.show()

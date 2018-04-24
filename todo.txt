@@ -1,0 +1,19 @@
+Maybe add an id, to easily delete unwanted commits
+
+DELETE FROM `photos_to_genres` WHERE `GenreID` = 23 AND `PhotoID` = 790
+===============
+
+TODO: 
+* (dropdown menu) choose genre or unassigned.
+* when genre chosen: Display list to the left(underline image that is being displayed)
+* print number of files under genre
+
+* add buttons - back, next image
+* under photo, when displayed - see its id, name, artist, genres that are assigned
+* add or remove genres
+
+
+* print names of files under genre
+* assign genres, rem
+
+make a readme.md file
