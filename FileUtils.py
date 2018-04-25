@@ -15,6 +15,11 @@ def check_if_file_exists(file_path_name):
     return os.path.exists(file_path_name)
 
 
+def get_file_extension(path):
+    path_split = os.path.splitext(path)
+    return path_split[1]
+
+
 def delete_file(file_path_name):
     os.remove(file_path_name)
 

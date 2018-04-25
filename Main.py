@@ -9,17 +9,27 @@ from GUI_Main import GUI_Main
 # TODO: assign - all photos in folder, assign to a genre
 if __name__ == "__main__":
     
-    # choise = 1
-    # ImgBoss = ImageManipulator()
-    #
-    # if choise == 1:
-    #     ImgBoss.get_images_of_genre(9)
-    # elif choise == 2:
-    #     ImgBoss.assign_current_photos_to_genre(23)
+    choice = 2
+    ImgMan = ImageManipulator()
 
-    root = tk.Tk()
-    GUI_Main(root).pack(side="top", fill="both", expand=True)
-    root.mainloop()
+    # Select images
+    if choice == 1:
+        ImgMan.get_images_of_genre(2)
+    # assign images to genre
+    elif choice == 2:
+        ImgMan.assign_current_photos_to_genre(5)
+    # add images to DB
+    elif choice == 3:
+        ImgMan.add_photos_to_db()
+    # add images to DB and assign them to a genre
+    elif choice == 4:
+        ImgMan.add_photos_assign_artist_and_genre_to_db("architecture")
+
+
+    # GUI
+    # root = tk.Tk()
+    # GUI_Main(root).pack(side="top", fill="both", expand=True)
+    # root.mainloop()
 
 
 # TODO: when calling sql_get_photo_id() - if doesn't find anything, returns none
