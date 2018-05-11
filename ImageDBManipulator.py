@@ -17,6 +17,28 @@ class ImageManipulator:
             photo_name = item['filename']
             copy_image(photo_name)
 
+    def get_images_of_artist_name(self, artist_name):
+        """Copies images of selected genre to folder"""
+        connection = create_connection()
+        artist_id = DS.sql_get_artists_id(connection, artist_name)['ArtistID']
+        print(artist_id)
+        photos_names_list_ = DS.sql_get_photo_name_from_artist_id(connection, artist_id)
+        close_connection(connection)
+
+        for item in photos_names_list_:
+            photo_name = item['filename']
+            copy_image(photo_name)
+
+    def get_images_of_file_extension(self, file_extension):
+        """Copies images of selected genre to folder"""
+        connection = create_connection()
+        photos_names_list_ = DS.sql_get_photo_name_from_file_extension(connection, file_extension)
+        close_connection(connection)
+
+        for item in photos_names_list_:
+            photo_name = item['filename']
+            copy_image(photo_name)
+
     def assign_current_photos_to_genre(self, genre_id):
         connection = create_connection()
 
@@ -28,6 +50,18 @@ class ImageManipulator:
 
         close_connection(connection)
 
+    def assign_current_photos_to_artist(self, artist_name):
+        connection = create_connection()
+
+        images = get_file_names_from_folder(r"C:\Users\Toshiba\Videos\images_queried")
+
+        for item in images:
+            photo_id = DS.sql_get_photo_id(connection, item)['PhotoID']
+            artist_id = DS.sql_get_artists_id(connection, artist_name)['ArtistID']
+            DA.sql_assign_photo_to_artist(connection, photo_id, artist_id)
+
+        close_connection(connection)
+
     def add_photos_to_db(self):
         connection = create_connection()
 
@@ -36,7 +70,7 @@ class ImageManipulator:
         for file_name in directory_items:
             # add photo to DB
             file_extension = get_file_extension(file_name)
-            DA.sql_insert_photo(connection, file_name, file_extension, 'null')
+            DA.sql_insert_photo(connection, file_name, file_extension, None)
 
         close_connection(connection)
 

@@ -17,6 +17,31 @@ class DBSelectQueries:
             return result
 
     @staticmethod
+    def sql_get_photo_name_from_artist_id(connection, artist_id):
+        """Returns a list"""
+        with connection.cursor() as cursor:
+            sql = "SELECT `filename` " + \
+                "FROM `photos`" + \
+                "WHERE `photos`.`PhotoID` IN (" + \
+                "SELECT `PhotoId`" + \
+                "FROM `photos_to_artists`" + \
+                "WHERE `photos_to_artists`.`ArtistID` =" + str(artist_id) + ")"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            return result
+
+    @staticmethod
+    def sql_get_photo_name_from_file_extension(connection, file_extension):
+        """Returns a list"""
+        with connection.cursor() as cursor:
+            sql = "SELECT `filename` " + \
+                "FROM `photos`" + \
+                "WHERE `file extension` = '" + file_extension + "'"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            return result
+
+    @staticmethod
     def sql_get_artists_id(connection, name_surname):
         """get the ID of the artist, from artist name"""
         # get artist of the image
@@ -48,7 +73,8 @@ class DBSelectQueries:
     def sql_get_photo_id(connection, photo_name):
         """get the ID of the photo, from photo name"""
         with connection.cursor() as cursor:
-            sql = "SELECT `PhotoID` FROM `photos` WHERE `filename` = '" + photo_name + "'"
+            # When error: photo_name into log
+            sql = "SELECT `PhotoID` FROM `photos` WHERE `filename` = '" + str(photo_name) + "'"
             cursor.execute(sql)
             result = cursor.fetchone()
             return result
@@ -62,3 +88,12 @@ class DBSelectQueries:
             num_result = result["EXISTS(SELECT `filename` FROM `photos` WHERE `photos`.`filename`='" + photo_name+"')"]
 
             return num_result
+
+    @staticmethod
+    def sql_get_all_genres(connection):
+        with connection.cursor() as cursor:
+            sql = "SELECT name from genres"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+
+            return result

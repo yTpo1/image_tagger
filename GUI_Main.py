@@ -1,103 +1,121 @@
 import tkinter as tk
-from PIL import ImageTk, Image
-from FileUtils import create_img_small, delete_file, check_if_file_exists
-
-from DBSelectQueries import DBSelectQueries
 from DBConnection import *
+from DBSelectQueries import DBSelectQueries as DS
+import tkinter.messagebox
+
 
 class GUI_Main(tk.Frame):
 
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
-        self.parent.configure(background='red')
 
-        # my GUI stuff goes here
-        w = 400
-        h = 400
-        parent.minsize(width=w, height=h)
-        # parent.maxsize(width=w, height=h)
+        # <create the rest of your GUI here>
+        # self.configure_gui()
 
-        self.image_part = C_Image(self, *args, **kwargs)
-        self.image_part.pack(side=tk.LEFT) #side="top"
+        self.container_1()
+        self.container_dropdown()
 
-        self.genre_list = Genre_List(self, *args, **kwargs)
-        self.genre_list.pack(side=tk.LEFT) #side="left"
+        # button = tk.Button(root, text="OK", command=self.get_value_from_dropdown)
+        # button.pack(side = tk.BOTTOM)
 
+    def configure_gui(self):
+        root.title("Image DB")
+        root.geometry("700x300")
 
-class Genre_List(tk.Frame):
+    def container_1(self):
+        container_1 = tk.Frame(root, bg="blue")
 
-    def __init__(self, parent, *args, **kwargs):
-        tk.Frame.__init__(self, parent, *args, **kwargs)
-        self.parent = parent
-        self.parent.configure(background='green')
+        self.buttons_top(container_1)
 
+        container_1.pack(side="top")
+
+    def buttons_top(self, container):
+
+        b_add_images_to_db = tk.Button(container, text="Add images to DB", command=self.choice_add_photos_to_db)
+        b_add_images_to_db.pack(side=tk.LEFT, padx=2, pady=2)
+
+        b_assign_img_to_artist = tk.Button(container, text="Assign images to artist", command=self.choice_assign_current_photos_to_artist)
+        b_assign_img_to_artist.pack(side=tk.LEFT, padx=2, pady=2)
+
+        b_assign_img_to_genre = tk.Button(container, text="Assign images to genre", command=self.choice_assign_current_photos_to_genre)
+        b_assign_img_to_genre.pack(side=tk.LEFT, padx=2, pady=2)
+
+        b_select_images_genre = tk.Button(container, text="Select images with genre", command=self.choice_get_images_of_genre)
+        b_select_images_genre.pack(side=tk.LEFT, padx=2, pady=2)
+
+        b_select_images_artist = tk.Button(container, text="Select images with artist name", command=self.choise_get_images_of_artist_name)
+        b_select_images_artist.pack(side=tk.LEFT, padx=2, pady=2)
+
+        b_img_file_extension = tk.Button(container, text="Select images with file extension", command=self.choice_get_images_of_file_extension)
+        b_img_file_extension.pack(side=tk.LEFT, padx=2, pady=2)
+
+    def choice_add_photos_to_db(self):
+        print("add photos to DB")
+
+    def choice_assign_current_photos_to_artist(self):
+        print("value is:" + self.v_artist_name.get())
+        print("assign_current_photos_to_artist")
+
+    def choice_assign_current_photos_to_genre(self):
+        print("value is:" + self.variable_genre.get())
+        print("assign_current_photos_to_genre")
+
+    def choice_get_images_of_genre(self):
+        print("value is:" + self.variable_genre.get())
+        print("get_images_of_genre")
+
+    def choice_get_images_of_file_extension(self):
+        print("value is:" + self.variable_f_exntension.get())
+        print("get_images_of_file_extension")
+
+    def choise_get_images_of_artist_name(self):
+        print("value is:" + self.v_artist_name.get())
+        print("get_images_of_artist_name")
+        #if no such value - popup
+        tk.messagebox.showinfo('Error', 'No such artist: ' + self.v_artist_name.get())
+
+    def container_dropdown(self):
+        container_2 = tk.Frame(root)
+        self.drop_down_widget()
+
+        text = tk.Label(root, text="Artist name: ")
+        text.pack(side = tk.LEFT)
+
+        self.v_artist_name = tk.StringVar(root)
+        e = tk.Entry(root, textvariable=self.v_artist_name)
+        e.pack(side = tk.LEFT)
+
+        container_2.pack(side = tk.BOTTOM)
+
+    # enter text
+    def get_value_from_dropdown(self):
+        print("value is:" + self.variable_genre.get())
+
+    def drop_down_widget(self):
+        # get existing genres from DB
         connection = create_connection()
-        photos_of_genre = DBSelectQueries.sql_get_photo_name_from_genre_id(connection, 1)
+        genres = DS.sql_get_all_genres(connection)
         close_connection(connection)
 
-        # 'filename'
-        for item in photos_of_genre:
-            photos_table = tk.Label(self.parent, text=item['filename']) # , anchor=tk.W, justify=tk.LEFT
-            photos_table.pack()
+        genres_my = []
+        for item in genres:
+            genres_my.append(item['name'])
+
+        self.variable_genre = tk.StringVar(root)
+        self.variable_genre.set(genres_my[0])  # default value
+
+        dropdown_gernres = tk.OptionMenu(root, self.variable_genre, *genres_my)
+        dropdown_gernres.pack(side = tk.LEFT)
+
+        f_exntensions = ['jpg', 'gif', 'png']
+        self.variable_f_exntension = tk.StringVar(root)
+        self.variable_f_exntension.set(f_exntensions[0])
+        dropdown_file_extension = tk.OptionMenu(root, self.variable_f_exntension, *f_exntensions)
+        dropdown_file_extension.pack(side = tk.LEFT)
 
 
-
-class C_Image(tk.Frame):
-    def __init__(self, c_parent, *args, **kwargs):
-        tk.Frame.__init__(self, c_parent, *args, **kwargs)
-        self.c_parent = c_parent
-
-        self.tmp_file_path_name = "temp_images/img_small.ppm"
-        img_dir = r"C:\Users\Toshiba\Videos\New folder (2)\1520220146889.jpg"
-
-        if check_if_file_exists(self.tmp_file_path_name):
-            delete_file(self.tmp_file_path_name)
-
-        # resize image so it would not take all of the screen
-        create_img_small(self.tmp_file_path_name, img_dir)
-
-        # Image
-        self.image = ImageTk.PhotoImage(Image.open("temp_images/img_default.ppm"))
-        self.label2 = tk.Label(self.c_parent, image=self.image)
-        # self.label2.image = self.image
-        self.label2.pack() # side="bottom", fill="both", expand="yes"
-
-        # Buttons
-        b_next_photo = tk.Button(text="Next Photo", fg="blue", command=self.display_image)
-        b_next_photo.pack(side=tk.LEFT) #side=tk.TOP
-
-
-    def display_image(self):
-        # display next the image
-        image2 = ImageTk.PhotoImage(Image.open(self.tmp_file_path_name))
-
-        self.label2.configure(image=image2)
-        self.label2.image = image2
-
-
-    #     self.tmp_file_path_name = "temp_images/img_small.ppm"
-    #     img_dir = r"C:\Users\Toshiba\Videos\New folder (2)\1520220146889.jpg"
-    #
-    #     if check_if_file_exists(self.tmp_file_path_name):
-    #         delete_file(self.tmp_file_path_name)
-    #
-    #     # resize image so it would not take all of the screen
-    #     create_img_small(self.tmp_file_path_name, img_dir)
-    #
-    #     # Image
-    #     self.image = ImageTk.PhotoImage(Image.open("temp_images/img_default.ppm"))
-    #     self.label2 = tk.Label(self.parent, image=self.image)
-    #     # self.label2.image = self.image
-    #     self.label2.pack(side="bottom", fill="both", expand="yes")
-    #
-    #     # Buttons
-    #     b_next_photo = tk.Button(text="Next Photo", fg="blue", command=self.display_image)
-    #     b_next_photo.pack(side=tk.TOP)
-    #
-    # def display_image(self):
-    #     # display next the image
-    #     image2 = ImageTk.PhotoImage(Image.open(self.tmp_file_path_name))
-    #
-    #     self.label2.configure(image=image2)
-    #     self.label2.image = image2
+if __name__ == "__main__":
+    root = tk.Tk()
+    GUI_Main(root).pack(side="top", fill="both", expand=True)
+    root.mainloop()

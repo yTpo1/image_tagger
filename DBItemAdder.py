@@ -15,24 +15,33 @@ class DBItemAdder:
 
     @staticmethod
     def sql_insert_photo(connection, filename, file_extension, description):
-            with connection.cursor() as cursor:
-                sql = "INSERT INTO `" + "photos" + "`(`PhotoID`, `filename`, `file extension`, `description`)" + \
-                      "VALUES (null,'"+filename+","+file_extension+","+description+" ')"
-                cursor.execute(sql)
-            connection.commit()
+        table_name = "photos"
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO `" + table_name + "`(`PhotoID`, `filename`, `file extension`, `description`)" + \
+                  "VALUES (null,'"+filename+"','"+file_extension
+
+            if description is None:
+                sql = sql + "', null )"
+            else:
+                sql = sql + "','" + description + " ')"
+
+            cursor.execute(sql)
+        connection.commit()
 
     @staticmethod
     def sql_assign_photo_to_artist(connection, photo_id, artist_id):
+        table_name = "photos_to_artists"
         with connection.cursor() as cursor:
-            sql = "INSERT INTO `" + "photos_to_artists" + "`(`PhotoID`, `ArtistID`)" + \
+            sql = "INSERT INTO `" + table_name + "`(`PhotoID`, `ArtistID`)" + \
                   " VALUES ('"+str(photo_id)+"','" + str(artist_id) + "')"
             cursor.execute(sql)
         connection.commit()
 
     @staticmethod
     def sql_assign_photo_to_genres(connection, photo_id, genre_id):
+        table_name = "photos_to_genres"
         with connection.cursor() as cursor:
-            sql = "INSERT INTO `" + "photos_to_genres" + "`(`PhotoID`, `GenreID`)" + \
+            sql = "INSERT INTO `" + table_name + "`(`PhotoID`, `GenreID`)" + \
                   " VALUES ('"+str(photo_id)+"','" + str(genre_id) + "')"
             cursor.execute(sql)
         connection.commit()
