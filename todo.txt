@@ -17,3 +17,8 @@ TODO:
 * assign genres, rem
 
 make a readme.md file
+
+
+TODO:
+for artists, enter letter and press button"Artists with this letter"
+and below will appear a list in text format of artists names with this letter

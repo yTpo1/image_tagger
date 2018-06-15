@@ -1,3 +1,4 @@
+import logging
 
 
 class DBSelectQueries:
@@ -56,9 +57,13 @@ class DBSelectQueries:
         """get the ID of the genre, from genre name"""
         with connection.cursor() as cursor:
             sql = "SELECT `GenreID` FROM `genres` WHERE `name` = '" + genre_name + "'"
-            cursor.execute(sql)
-            result = cursor.fetchone()
-            return result
+            try:
+                cursor.execute(sql)
+                result = cursor.fetchone()
+            except Exception as e:
+                logging.warning("Exception is :" + str(e) + "\ngenre_name is: " + genre_name)
+            else:
+                return result
 
     @staticmethod
     def sql_get_genre_name(connection, genre_id):
@@ -78,6 +83,17 @@ class DBSelectQueries:
             cursor.execute(sql)
             result = cursor.fetchone()
             return result
+
+    @staticmethod
+    def sql_check_artist_exists_in_db(connection, artist_name):
+        with connection.cursor() as cursor:
+            sql = "SELECT EXISTS(SELECT `NameSurname` FROM `artists` WHERE `artists`.`NameSurname`='" + artist_name + "')"
+            cursor.execute(sql)
+            result = cursor.fetchone()
+            # num_result will be a number. result is a dictionary object
+            num_result = result["EXISTS(SELECT `NameSurname` FROM `artists` WHERE `artists`.`NameSurname`='" + artist_name + "')"]
+
+            return num_result
 
     @staticmethod
     def sql_check_photo_exists_in_db(connection, photo_name):

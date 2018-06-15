@@ -1,6 +1,7 @@
 from DBSelectQueries import DBSelectQueries as DBSel
 from FileUtils import get_file_names_from_folder, read_json_file
 import re
+import logging
 
 
 class DBItemAdder:
@@ -15,9 +16,8 @@ class DBItemAdder:
 
     @staticmethod
     def sql_insert_photo(connection, filename, file_extension, description):
-        table_name = "photos"
         with connection.cursor() as cursor:
-            sql = "INSERT INTO `" + table_name + "`(`PhotoID`, `filename`, `file extension`, `description`)" + \
+            sql = "INSERT INTO `photos`(`PhotoID`, `filename`, `file extension`, `description`)" + \
                   "VALUES (null,'"+filename+"','"+file_extension
 
             if description is None:
@@ -25,7 +25,11 @@ class DBItemAdder:
             else:
                 sql = sql + "','" + description + " ')"
 
-            cursor.execute(sql)
+            try:
+                cursor.execute(sql)
+            except Exception as e:
+                logging.warning("Exception is :" + str(e) + "\n"+filename+"\n"+file_extension+"\n"+description)
+
         connection.commit()
 
     @staticmethod

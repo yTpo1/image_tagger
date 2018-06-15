@@ -2,6 +2,20 @@ import json
 import os
 from PIL import Image
 import shutil
+import re
+
+
+def move_file(filename):
+    source_loc = r"C:\Users\Toshiba\Videos\images_queried\\"
+    destination_loc = r"C:\Users\Toshiba\Videos\files_not_added\\"
+    os.rename(source_loc + filename, destination_loc+filename)
+
+
+def check_cyrillic(text):
+    if re.search(r'[а-яА-Я]', text):
+        return True
+    else:
+        return False
 
 
 def create_img_small(tmp_file_path_name, img_path_name):
