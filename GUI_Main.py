@@ -98,9 +98,12 @@ class GUI_Main(tk.Frame):
 
     def drop_down_widget(self):
         # get existing genres from DB
-        connection = create_connection()
-        genres = DS.sql_get_all_genres(connection)
-        close_connection(connection)
+        # Changed on 06/06/20
+        #connection = create_connection()
+        #genres = DS.sql_get_all_genres(connection)
+        #close_connection(connection)
+        #genres = self.ImgMan.get_all_genres()
+        genres = [{"name" : "yo"}, {"name":"bro"}]
 
         genres_my = []
         for item in genres:

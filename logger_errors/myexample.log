@@ -1,9 +1,0 @@
-WARNING:root:(1054, "Unknown column 'GenreID1' in 'field list'")
-WARNING:root:(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SELECT1 `GenreID` FROM `genres` WHERE `name` = 'anime'' at line 1")
-WARNING:root:Exception is :'NoneType' object is not subscriptable
-genre_id is: anime
-WARNING:root:Exception is :'NoneType' object is not subscriptable
-genre_id is: anime
-WARNING:root:Exception is :(2003, "Can't connect to MySQL server on 'localhost' ([WinError 10061] No connection could be made because the target machine actively refused it)")
-WARNING:root:Exception is :(2003, "Can't connect to MySQL server on 'localhost' ([WinError 10061] No connection could be made because the target machine actively refused it)")
-WARNING:root:Exception is :(2003, "Can't connect to MySQL server on 'localhost' ([WinError 10061] No connection could be made because the target machine actively refused it)")

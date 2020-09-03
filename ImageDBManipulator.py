@@ -8,6 +8,12 @@ import tkinter.messagebox
 
 class ImageManipulator:
 
+    def get_all_genres():
+        connection = create_connection()
+        genres = DS.sql_get_all_genres(connection)
+        close_connection(connection)
+        return genres
+
     def get_images_of_genre(self, genre_name):
         """Copies images of selected genre to folder"""
         connection = create_connection()
